@@ -12,6 +12,7 @@ import com.app.models.User;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -26,12 +27,18 @@ public class UserService {
 
     @Autowired
     UserRepository userRepository;
+    
+    @Autowired
+    private PasswordEncoder enc;
 
     public String addUser(UserEntryDto userEntryDto) throws UserAlreadyExistsWithEmail{
-        if(userRepository.findByEmailId(userEntryDto.getEmailId()) != null) {
+//    	System.out.println(userRepository.findByEmailId(userEntryDto.getEmailId()));
+    	Optional<User> useropt=userRepository.findByEmailId(userEntryDto.getEmailId());
+        if(!useropt.isEmpty()) {
             throw new UserAlreadyExistsWithEmail();
         }
         User user = UserTransformer.userDtoToUser(userEntryDto);
+        user.setPassword(enc.encode(userEntryDto.getPassword()));
 
         userRepository.save(user);
         return "User Saved Successfully";

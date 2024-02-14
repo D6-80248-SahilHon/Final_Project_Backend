@@ -3,11 +3,15 @@ package com.app.security;
 import java.security.Key;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.stream.Collectors;
+
+import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.Claims;
@@ -28,6 +32,7 @@ public class JwtUtils {
 	
 	private Key key;
 	
+	@PostConstruct
 	public void init() {
 		key=Keys.hmacShaKeyFor(jwtSecret.getBytes());
 	}
@@ -54,6 +59,22 @@ public class JwtUtils {
 		return authorityString;
 	}
 	
+	public String getUserNameFromJwtToken(Claims claims) {
+		return claims.getSubject();
+	}
+
+	public Claims validateJwtToken(String jwtToken) {
+		Claims claims = Jwts.parserBuilder().setSigningKey(key).build().
+				parseClaimsJws(jwtToken).getBody();
+		return claims;		
+	}
+	
+	public List<GrantedAuthority> getAuthoritiesFromClaims(Claims claims) {
+		String authString = (String) claims.get("authorities");
+		List<GrantedAuthority> authorities = AuthorityUtils.commaSeparatedStringToAuthorityList(authString);
+		authorities.forEach(System.out::println);
+		return authorities;
+	}
 	
 	
 }

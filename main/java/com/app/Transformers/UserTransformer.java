@@ -14,6 +14,7 @@ public class UserTransformer {
                 .gender(userEntryDto.getGender())
                 .mobileNo(userEntryDto.getMobileNo())
                 .emailId(userEntryDto.getEmailId())
+                .role(userEntryDto.getRole())
                 .build();
 
         return user;

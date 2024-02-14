@@ -33,7 +33,7 @@ public class User {
     @NotBlank(message = "Field cannot be blank")
     private String name;
 
-    @Min(value = 18)
+   
     private Integer age;
 
     
@@ -42,14 +42,13 @@ public class User {
     @Enumerated(value = EnumType.STRING)
     private Gender gender;
 
-    @Size(min = 10, max = 10, message = "Field length must be 20 characters")
+    
     private String mobileNo;
 
     @Column(unique = true)
-    @Email
     private String emailId;
     
-    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$",message = "Password Must Conatin 1 uppercase,1Lowercase ,i number and a special character")
+    
     private String password;//Not working properly
     
     @Enumerated(value = EnumType.STRING)

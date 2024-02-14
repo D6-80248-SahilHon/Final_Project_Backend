@@ -66,10 +66,10 @@ public class UserController {
     
     @PostMapping("/signin")
     public ResponseEntity<?> signInUser(@RequestBody SigninRequest reqDto ){
-    	System.out.println(reqDto);
+    	System.out.println("here "+reqDto);
     	
     	Authentication verifiedAuth=mgr
-    			.authenticate(new UsernamePasswordAuthenticationToken(reqDto.getEmail(), reqDto.getPassword()));
+    			.authenticate(new UsernamePasswordAuthenticationToken(reqDto.getEmailId(), reqDto.getPassword()));
     	System.out.println(verifiedAuth.getClass());
     	System.out.println(verifiedAuth.isAuthenticated());
     	
