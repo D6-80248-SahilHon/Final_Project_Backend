@@ -3,8 +3,10 @@ package com.app.contollers;
 import com.app.Repositories.UserRepository;
 import com.app.RequestDtos.SigninRequest;
 import com.app.RequestDtos.UserEntryDto;
+import com.app.ResponseDtos.ReturnUserDto;
 import com.app.ResponseDtos.SigninResponse;
 import com.app.ResponseDtos.TicketResponseDto;
+import com.app.models.User;
 import com.app.security.JwtUtils;
 import com.app.services.UserService;
 
@@ -18,6 +20,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 @RestController
 @RequestMapping("/user")
@@ -80,5 +85,28 @@ public class UserController {
     	}
     	
     	return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid Credenstials..");
+    }
+    
+    @GetMapping()
+    public List<ReturnUserDto> getAllUser(){
+    	try {
+    		
+    		return userService.getAllUser();
+    	}catch(Exception e){
+    		return null;
+    	}
+    }
+    
+    @PostMapping("/validate")
+    public String validateUser(@RequestParam("userEmail") String userEmail,@RequestParam("password") String password, HttpServletRequest request, HttpSession session) {
+    	User u=userService.getByEmailPassword(userEmail,password);
+    	if(u!=null) {
+    	    HttpSession newSession = request.getSession(); // create session
+    	    newSession.setAttribute("User",u);
+    	    return "Success";
+    	}else {
+    		return "User not valid ";
+    	}
+    	
     }
 }

@@ -4,12 +4,14 @@ import com.app.Exceptions.UserAlreadyExistsWithEmail;
 import com.app.Exceptions.UserDoesNotExists;
 import com.app.Repositories.UserRepository;
 import com.app.RequestDtos.UserEntryDto;
+import com.app.ResponseDtos.ReturnUserDto;
 import com.app.ResponseDtos.TicketResponseDto;
 import com.app.Transformers.TicketTransformer;
 import com.app.Transformers.UserTransformer;
 import com.app.models.Ticket;
 import com.app.models.User;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -30,6 +32,9 @@ public class UserService {
     
     @Autowired
     private PasswordEncoder enc;
+    
+    @Autowired
+    ModelMapper mapper;
 
     public String addUser(UserEntryDto userEntryDto) throws UserAlreadyExistsWithEmail{
 //    	System.out.println(userRepository.findByEmailId(userEntryDto.getEmailId()));
@@ -67,5 +72,21 @@ public class UserService {
             throw new UserDoesNotExists();
         }
 		userRepository.deleteById(userId);
+	}
+	
+	public List<ReturnUserDto> getAllUser() {
+		// TODO Auto-generated method stub
+		List<User> li=userRepository.findAll();
+		List<ReturnUserDto> lst=new ArrayList<ReturnUserDto>();
+		for(User u:li) {
+			lst.add(mapper.map(u, ReturnUserDto.class));
+		}
+		return lst;
+	}
+	
+	public User getByEmailPassword(String userEmail, String password) {
+		User u=userRepository.findByEmailId(userEmail).orElseThrow();
+		if(u.getPassword().equals(password))return u;
+		return null;
 	}
 }

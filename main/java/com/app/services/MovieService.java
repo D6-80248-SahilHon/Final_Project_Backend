@@ -1,6 +1,7 @@
 package com.app.services;
 
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,9 @@ public class MovieService {
 
     @Autowired
     private ShowRepository showRepository;
+    
+    @Autowired
+    private ModelMapper mapper;
 
     public String addMovie(MovieEntryDto movieEntryDto) throws MovieAlreadyPresentWithSameNameAndLanguage {
         if(movieRepository.findByMovieName(movieEntryDto.getMovieName()) != null) {
@@ -59,6 +63,18 @@ public class MovieService {
 		List<MovieResponseDto> rlist=MovieTransformer.movieToMovieDto(list);
 		return rlist;
 	}
+	
+	public MovieResponseDto getMoviesById(Integer id) {
+		MovieResponseDto mdto=null;
+		try {
+			
+		Movie mo=movieRepository.findById(id).orElseThrow();
+		 mdto=mapper.map(mo, MovieResponseDto.class);
+		}catch(Exception e) {
+			System.out.println(e.getMessage());
+		}
+		return mdto;
+	}
 
 	public String deleteMovie(Integer movieId) throws MovieDoesNotExists {
 		  Optional<Movie> movieOpt = movieRepository.findById(movieId);
@@ -69,4 +85,6 @@ public class MovieService {
 	       
 		return "Movie Deleted Successfully";
 	}
+	
+	
 }

@@ -6,6 +6,7 @@ import static org.springframework.http.MediaType.IMAGE_JPEG_VALUE;
 import static org.springframework.http.MediaType.IMAGE_PNG_VALUE;
 
 import java.io.IOException;
+import java.util.Base64;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,15 +57,22 @@ public class MovieController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(imgService.uploadImage(movieId, imageFile));
 	}
     
-    @GetMapping(value = "/images/{movieId}", produces = { IMAGE_GIF_VALUE, IMAGE_JPEG_VALUE, IMAGE_PNG_VALUE })
-	public ResponseEntity<?> serveMovieImage(@PathVariable Integer movieId) throws IOException {
-		return ResponseEntity.ok(imgService.downloadImage(movieId));
-	}
+    @GetMapping(value = "/images/{movieId}")
+  	public ResponseEntity<byte[]> serveMovieImage(@PathVariable Integer movieId) throws IOException {
+          byte[] base64encodedData = Base64.getEncoder().encode(imgService.downloadImage(movieId));
+          System.out.println(base64encodedData);
+  		return ResponseEntity.ok(base64encodedData);
+  	}
     
     //Error handling is Pending
     @GetMapping(value="/MovieList")
     public List<MovieResponseDto> movieList(){
     	return movieService.getMoviesList();
+    }
+    
+    @GetMapping(value="/{id}")
+    public MovieResponseDto movieById(@PathVariable Integer id){
+    	return movieService.getMoviesById(id);
     }
     
     @DeleteMapping("{movieId}")
