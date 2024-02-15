@@ -52,7 +52,7 @@ public class TheaterController {
     		return new ResponseEntity<>(message,HttpStatus.OK);
     		
     	}catch(Exception e) {
-    		return new ResponseEntity<>(message,HttpStatus.NOT_FOUND);
+    		return new ResponseEntity<>(message,HttpStatus.BAD_REQUEST);
     	}
     }
 }

@@ -97,4 +97,10 @@ public class UserService {
 		if(u.getPassword().equals(password))return u;
 		return null;
 	}
+
+	public User getUserByEmail(String email) {
+		User u= userRepository.findByEmailId(email).get();
+		u.getTicketList().size();
+		return  u;
+	}
 }

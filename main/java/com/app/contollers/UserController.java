@@ -10,6 +10,9 @@ import com.app.models.User;
 import com.app.security.JwtUtils;
 import com.app.services.UserService;
 
+import io.jsonwebtoken.Claims;
+
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,6 +40,9 @@ public class UserController {
     
     @Autowired
     JwtUtils utils;
+    
+    @Autowired
+    ModelMapper mapper;
 
     @PostMapping("/addNew")
     public ResponseEntity<String> addNewUser(@RequestBody UserEntryDto userEntryDto) {
@@ -96,20 +102,32 @@ public class UserController {
     		return null;
     	}
     }
-    
-//    @PostMapping("/validate")//Aditya's api
-//    public ResponseEntity<String> validateUser(@RequestBody SigninRequest uservaldto, HttpServletRequest request, HttpSession session) {
-//        System.out.println(uservaldto);
-//        
-//        User user = userService.getByEmailPassword(uservaldto);
-//        if (user != null) {
-//            HttpSession newSession = request.getSession(); // Create session
-//            newSession.setAttribute("User", user);
-//            return new ResponseEntity<>("success", HttpStatus.CREATED);
-//        } else {
-//            return new ResponseEntity<>("error", HttpStatus.BAD_REQUEST);
-//        }
-//    }
+
+    @GetMapping("/email")
+    public ReturnUserDto getUserByEmail(HttpServletRequest request) {
+        try {
+            String authHeader = request.getHeader("Authorization");
+            if (authHeader != null && authHeader.startsWith("Bearer ")) {
+                // Extract JWT from the Authorization header
+                String jwt = authHeader.substring(7);
+                
+                // Validate JWT and retrieve payload claims
+                Claims payloadClaims = utils.validateJwtToken(jwt);
+                
+                // Extract user email from the claims
+                String email = utils.getUserNameFromJwtToken(payloadClaims);
+                System.out.println(email);
+                
+                // Retrieve user information by email
+                return mapper.map(userService.getUserByEmail(email), ReturnUserDto.class);
+            }
+        } catch (Exception e) {
+            // Handle any exceptions and return null
+            return null;
+        }
+        return null;
+    }
+
 
     
     @PostMapping("/validate")

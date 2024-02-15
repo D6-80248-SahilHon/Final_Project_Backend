@@ -2,6 +2,7 @@ package com.app.ResponseDtos;
 
 
 import com.app.types.Gender;
+import com.app.types.Roles;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,4 +23,5 @@ public class ReturnUserDto {
     private Integer age;
     private Gender gender;
     private String address;
+    private Roles role;
 }
