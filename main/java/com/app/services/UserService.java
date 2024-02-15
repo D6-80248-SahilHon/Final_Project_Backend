@@ -3,6 +3,7 @@ package com.app.services;
 import com.app.Exceptions.UserAlreadyExistsWithEmail;
 import com.app.Exceptions.UserDoesNotExists;
 import com.app.Repositories.UserRepository;
+import com.app.RequestDtos.SigninRequest;
 import com.app.RequestDtos.UserEntryDto;
 import com.app.ResponseDtos.ReturnUserDto;
 import com.app.ResponseDtos.TicketResponseDto;
@@ -65,6 +66,13 @@ public class UserService {
         System.out.println(ticketResponseDtoList.toString());
         return ticketResponseDtoList;
     }
+    
+    public User getByEmailPassword(SigninRequest uservaldto) {
+		
+		User u=userRepository.findByEmailId(uservaldto.getEmailId()).orElseThrow();
+		if(u.getPassword().equals(uservaldto.getPassword()))return u;
+		return null;
+	}
 
 	public void deleteUser(Integer userId) {
 		Optional<User> userOpt = userRepository.findById(userId);

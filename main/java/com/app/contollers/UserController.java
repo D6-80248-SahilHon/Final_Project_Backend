@@ -97,6 +97,21 @@ public class UserController {
     	}
     }
     
+//    @PostMapping("/validate")//Aditya's api
+//    public ResponseEntity<String> validateUser(@RequestBody SigninRequest uservaldto, HttpServletRequest request, HttpSession session) {
+//        System.out.println(uservaldto);
+//        
+//        User user = userService.getByEmailPassword(uservaldto);
+//        if (user != null) {
+//            HttpSession newSession = request.getSession(); // Create session
+//            newSession.setAttribute("User", user);
+//            return new ResponseEntity<>("success", HttpStatus.CREATED);
+//        } else {
+//            return new ResponseEntity<>("error", HttpStatus.BAD_REQUEST);
+//        }
+//    }
+
+    
     @PostMapping("/validate")
     public String validateUser(@RequestParam("userEmail") String userEmail,@RequestParam("password") String password, HttpServletRequest request, HttpSession session) {
     	User u=userService.getByEmailPassword(userEmail,password);

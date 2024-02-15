@@ -3,14 +3,17 @@ package com.app.services;
 import com.app.Exceptions.TheaterIsNotPresentOnThisAddress;
 import com.app.Exceptions.TheaterIsPresentOnThatAddress;
 import com.app.Repositories.TheaterRepository;
+import com.app.Repositories.UserRepository;
 import com.app.RequestDtos.TheaterEntryDto;
 import com.app.RequestDtos.TheaterSeatEntryDto;
 import com.app.Transformers.TheaterTransformer;
 import com.app.models.Theater;
 import com.app.models.TheaterSeat;
+import com.app.models.User;
 import com.app.types.SeatType;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,6 +23,10 @@ public class TheaterService {
 
     @Autowired
     private TheaterRepository theaterRepository;
+    
+    @Autowired
+    private UserRepository userRepository;
+    
     public String addTheater(TheaterEntryDto theaterEntryDto) throws TheaterIsPresentOnThatAddress{
         if(theaterRepository.getTheaterAndTheaterSeatDetails(theaterEntryDto.getAddress()) != null) {
             throw new TheaterIsPresentOnThatAddress();
@@ -88,5 +95,13 @@ public class TheaterService {
         theaterRepository.save(theater);
 
         return "Theater Seats have been added successfully";
+    }
+    
+    public String deleteTheater(Integer id) throws UsernameNotFoundException{
+    	Theater t=theaterRepository.findById(id).get();
+    	if(t==null)throw new UsernameNotFoundException("User Does Not Exist");
+    	theaterRepository.deleteById(id);
+    	return "Theater Deleted Successfully";
+    	
     }
 }
