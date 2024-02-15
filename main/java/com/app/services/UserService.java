@@ -98,6 +98,7 @@ public class UserService {
 		return null;
 	}
 
+	//
 	public User getUserByEmail(String email) {
 		User u= userRepository.findByEmailId(email).get();
 		u.getTicketList().size();
